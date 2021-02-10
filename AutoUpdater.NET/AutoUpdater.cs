@@ -68,7 +68,7 @@ namespace AutoUpdaterDotNET
 
         internal static Uri BaseUri;
 
-        internal static bool Running;
+        public static bool Running; // visibility changed for running var
 
         /// <summary>
         ///     You can set this field to your current version if you don't want to determine the version from the assembly.
