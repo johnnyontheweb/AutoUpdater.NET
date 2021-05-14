@@ -67,7 +67,9 @@ namespace AutoUpdaterDotNET
         private static bool _isWinFormsApplication;
 
         internal static Uri BaseUri;
-
+        /// <summary>
+        /// Check if this instance is running
+        /// </summary>
         public static bool Running; // visibility changed for running var
 
         /// <summary>
