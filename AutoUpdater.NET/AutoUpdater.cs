@@ -73,6 +73,11 @@ namespace AutoUpdaterDotNET
         public static bool Running; // visibility changed for running var
 
         /// <summary>
+        /// Check if it is fast-ring
+        /// </summary>
+        public static bool FastRing = false;
+
+        /// <summary>
         ///     You can set this field to your current version if you don't want to determine the version from the assembly.
         /// </summary>
         public static Version InstalledVersion;
@@ -221,6 +226,16 @@ namespace AutoUpdaterDotNET
         public static event ParseUpdateInfoHandler ParseUpdateInfoEvent;
 
         /// <summary>
+        ///     A delegate type for hooking up parsing logic.
+        /// </summary>
+        public delegate void UpdateIsAvailableEventHandler(bool updAvail);
+
+        /// <summary>
+        ///     An event that clients can use to be notified whenever an update is available.
+        /// </summary>
+        public static event UpdateIsAvailableEventHandler UpdateIsAvailableEvent;
+
+        /// <summary>
         ///     Set if you want the default update form to have a different size.
         /// </summary>
         public static Size? UpdateFormSize = null;
@@ -261,7 +276,7 @@ namespace AutoUpdaterDotNET
             catch (NotSupportedException)
             {
             }
-
+            
             if (Mandatory && _remindLaterTimer != null)
             {
                 _remindLaterTimer.Stop();
@@ -381,10 +396,10 @@ namespace AutoUpdaterDotNET
             {
                 throw new MissingFieldException();
             }
-
+            
             args.InstalledVersion = InstalledVersion != null ? InstalledVersion : mainAssembly.GetName().Version;
             args.IsUpdateAvailable = new Version(args.CurrentVersion) > args.InstalledVersion;
-
+            UpdateIsAvailableEvent(args.IsUpdateAvailable);
             if (!Mandatory)
             {
                 if (string.IsNullOrEmpty(args.Mandatory.MinimumVersion) ||
